@@ -1,0 +1,353 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>metrodigi - movie quiz application</title>
+  <!-- stylesheets -->
+  <link type="text/css" href="stylesheets/foundation.min.css" media="all" rel="stylesheet" />
+  <link type="text/css" href="stylesheets/application.css" media="all" rel="stylesheet" />
+  <!-- libraries -->
+  <script type="text/javascript" src="javascripts/libs/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/libs/underscore.min.js"></script>
+  <script type="text/javascript" src="javascripts/libs/backbone.min.js"></script>
+  <!-- routes, models, views -->
+  <script type="text/javascript" src="javascripts/mmRoutes.js"></script>
+  <script type="text/javascript" src="javascripts/models/movie.js"></script>
+  <script type="text/javascript" src="javascripts/models/actor.js"></script>
+  <script type="text/javascript" src="javascripts/views/index.js"></script>
+  <script type="text/javascript" src="javascripts/views/indexThumbnail.js"></script>
+  <script type="text/javascript" src="javascripts/views/movieCreate.js"></script>
+  <script type="text/javascript" src="javascripts/views/movieEdit.js"></script>
+  <script type="text/javascript" src="javascripts/views/movieShow.js"></script>
+  <script type="text/javascript" src="javascripts/views/actorCreate.js"></script>
+  <script type="text/javascript" src="javascripts/views/actorEdit.js"></script>
+  <script type="text/javascript" src="javascripts/views/actorShow.js"></script>
+</head>
+<body>
+
+<div class="row masthead">
+  <div class="large-12 columns">
+    <h1 class="branding">metro|<span class="bold">movies</span></h1>
+    <ul class="navigation">
+      <li class="nav-item recent"><a href="#/movies/recent">Recent Movies</a></li>
+      <li class="nav-item add-new">
+        <a href="#">Add New</a>
+        <ul class="submenu">
+          <li><a href="#/movie/create">Add a movie</a></li>
+          <li><a href="#/actor/create">Add an actor</a></li>
+        </ul>
+      </li>
+      <!-- <li class="nav-item"><a href="#">My Content</a></li> -->
+      <li class="search"><input type="text" name="search" id="search" placeholder="Search movies and actors..." /></li>
+    </ul>
+  </div>
+</div>
+
+<div class="row page-heading breadcrumb">
+  <div class="large-12 columns">
+    <h2>Recent Movies</h2>
+  </div>
+</div>
+
+<div id="renderView"></div>
+
+<!-- MovieIndexView: Recent movies listing -->
+<script type="text/template" id="indexTemplate">
+  <div class="row content movie-listing"></div>
+</script>
+
+<script type="text/template" id="indexThumbnailTemplate">
+  <a href="#movie/<%= id %>/view">
+    <div class="large-12 columns thumb-inner">
+      <img src="<%= image %>" alt="<%= title %>" />
+    </div>
+  </a>
+</script>
+
+
+<!-- MovieShowView: Movie detail page -->
+<script type="text/template" id="showMovieTemplate">
+  <div class="row content movie-detail">
+    <div class="small-12 columns">
+      <a class="right" href="#/movies/recent">&laquo; Return to Listing</a>
+    </div>
+    <div class="large-12 columns">
+      <div class="large-4 columns movie-image"><img src="<%= image %>" alt="" /></div>
+      <div class="large-8 columns movie-description">
+        <ul>
+          <li class="title"><%= title %></li>
+          <li><span class="bold">Release year:</span> <%= year %></li>
+          <li><span class="bold">Gross income:</span> $<%= gross %></li>
+          <li><span class="bold">Directed by:</span> <%= director %></li>
+          <li><span class="bold">Actors:</span> 
+              <ul><%= actors %></ul>
+          </li>
+          <li><span class="bold">Rating:</span> <%= rating %></li>
+          <li><span class="bold">Genre:</span> <%= genre %></li>
+          <li class="actions"><a href="#" class="button green edit">Edit movie</a></li>
+          <li class="actions"><a href="#" class="button red delete">Delete movie</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</script>
+
+<!-- ActorShowView: Actor detail page -->
+<script type="text/template" id="showActorTemplate">
+  <div class="row content movie-detail">
+    <div class="small-12 columns">
+      <a class="right" href="#/movies/recent">&laquo; Return to Listing</a>
+    </div>
+    <div class="large-12 columns">
+      <div class="large-12 columns movie-description">
+        <ul>
+          <li class="title"><%= firstname %>&nbsp;<%= lastname %></li>
+          <li><span class="bold">Birthdate:</span> <%= dob %></li>
+          <li><span class="bold">Movies:</span> 
+              <ul><%= movies %></ul>
+          </li>
+          <li class="actions spacer"><a href="#" class="button green edit">Edit actor</a></li>
+          <li class="actions spacer"><a href="#" class="button red delete">Delete actor</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</script>
+
+<!-- EditMovieView: Add /Edit movie -->
+<script type="text/template" id="editMovieTemplate">
+  <div class="row content add-movie">
+    <div class="large-12 columns">
+      <div class="large-8 columns">
+        <form>
+          <div class="row">
+            <div class="large-10 columns">
+              <label>Movie title</label>
+              <input type="text" name="title" placeholder="Enter the full movie title" value="<%= title %>" />
+            </div>
+
+            <div class="large-10 columns left">
+              <div class="row collapse">
+                <label>Movie Poster URL</label>
+                <div class="small-2 columns">
+                  <span class="prefix">http://</span>
+                </div>
+                <div class="small-10 columns">
+                  <input type="text" name="image" placeholder="images.google.com/" value="<%= image %>" />
+                </div>
+              </div>
+            </div>
+          </div>
+        
+          <div class="row">
+            <div class="large-5 columns">
+              <label>Release year</label>
+              <input type="text" name="year" placeholder="year" value="<%= year %>" />
+            </div>
+            <div class="large-5 columns left">
+              <div class="row collapse">
+                <label>Gross income</label>
+                <div class="small-3 columns">
+                  <span class="prefix">$</span>
+                </div>
+                <div class="small-9 columns">
+                  <input type="text" name="gross" placeholder="Gross revenue" value="<%= gross %>" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="large-10 columns">
+              <label>Actors</label>
+              <input type="text" name="actorIds" placeholder="" value="<%= actorIds %>" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="large-10 columns">
+              <label>Director</label>
+              <input type="text" name="director" placeholder="Enter the full movie title" value="<%= director %>" />
+            </div>
+          </div>        
+          <div class="row">
+            <div class="large-10 columns">
+              <label>Genre</label>
+              <input type="text" name="genre" placeholder="Enter the movie genre" value="<%= genre %>" />
+            </div>
+          </div> 
+          <div class="row">
+            <div class="large-10 columns">
+              <label>Rating</label>
+              <input type="text" name="rating" placeholder="rating" value="<%= rating %>" />
+            </div>
+          </div>           
+        </form>
+      </div>
+
+      <div class="large-4 columns">
+        <a href="#" class="button save green"><span class="icon">&#10004;</span> Save</a>
+        <a href="#" class="button cancel"><span class="icon">&#10008;</span> Cancel</a>
+      </div>
+    </div>
+  </div>
+</script>
+
+
+<!-- EditActorView: Add / Edit actor -->
+<script type="text/template" id="editActorTemplate">
+  <div class="row content add-movie">
+    <div class="large-12 columns">
+      <div class="large-8 columns">
+        <form>
+          <div class="row">
+            <div class="large-10 columns">
+              <label>Firstname</label>
+              <input type="text" name="firstname" placeholder="Firstname" value="<%= firstname %>" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="large-10 columns">
+              <label>Lastname</label>
+              <input type="text" name="lastname" placeholder="Lastname" value="<%= lastname %>" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="large-10 columns">
+              <label>Birthdate</label>
+              <input type="text" name="dob" placeholder="Birthdate" value="<%= dob %>" />
+            </div>
+          </div>          
+          <div class="row">
+            <div class="large-10 columns">
+              <label>Acted in Movies</label>
+              <input type="text" name="movieIds" placeholder="movies" value="<%= moviesIds %>" />
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="large-4 columns">
+        <a href="#" class="button save green"><span class="icon">&#10004;</span> Save</a>
+        <a href="#" class="button cancel"><span class="icon">&#10008;</span> Cancel</a>
+      </div>
+    </div>
+  </div>
+</script>
+
+
+<script type="text/javascript">
+  var movies  = new APP.Collections.MovieCollection();
+  var actors  = new APP.Collections.ActorCollection();
+  var router  = new APP.Routers.mmRoutes({
+    movies : movies,
+    actors : actors
+  });
+
+  // bootstrap movies collection
+  movies.reset([
+    {
+      'title'   : 'Fight Club',
+      'year'    : '1999',
+      'gross'   : '10,000,000',
+      'director': 'John Doctype',
+      'actorIds': '1,2,3',
+      'actors'  : '',
+      'genre'   : 'Action, Adventure, Sci-Fi',
+      'rating'  : '5',
+      'image'   : 'images/poster_fight_club.jpg',
+      'id'      : '1'
+    },
+    {
+      'title'   : 'The Shawshank Redemption',
+      'year'    : '2001',
+      'gross'   : '10,000,000',
+      'director': 'John Doctype',
+      'actorIds': '1,2,3',
+      'actors'  : '',
+      'genre'   : 'action',
+      'rating'  : '4',
+      'image'   : 'images/poster_the_shawshank_redemption.jpg',
+      'id'      : '2'
+    },
+    {
+      'title'   : 'The Godfather',
+      'year'    : '2003',
+      'gross'   : '10,000,000',
+      'director': 'John Doctype',
+      'actorIds': '1,2,3',
+      'actors'  : '',
+      'genre'   : 'action',
+      'rating'  : '3',
+      'image'   : 'images/poster_the_godfather.jpg',
+      'id'      : '3'
+    },
+    {
+      'title'   : 'The Dark Knight',
+      'year'    : '1999',
+      'gross'   : '10,000,000',
+      'director': 'John Doctype',
+      'actorIds': '1,2,3',
+      'actors'  : '',
+      'genre'   : 'action',
+      'rating'  : '5',
+      'image'   : 'images/poster_the_dark_knight.jpg',
+      'id'      : '4'
+    },
+    {
+      'title'   : 'Pulp Fiction',
+      'year'    : '2001',
+      'gross'   : '10,000,000',
+      'director': 'John Doctype',
+      'actorIds': '1,2,3',
+      'actors'  : '',
+      'genre'   : 'action',
+      'rating'  : '4',
+      'image'   : 'images/poster_pulp_fiction.jpg',
+      'id'      : '5'
+    },
+    {
+      'title'   : 'Inception',
+      'year'    : '2003',
+      'gross'   : '10,000,000',
+      'director': 'John Doctype',
+      'actorIds': '1,2,3',
+      'actors'  : '',
+      'genre'   : 'action',
+      'rating'  : '3',
+      'image'   : 'images/poster_inception.jpg',
+      'id'      : '6'
+    }
+  ]);
+
+  // bootstrap actors collection
+  actors.reset([
+    {
+      'id'        : '1',
+      'moviesIds' : '1,2,3,5,6',
+      'movies'    : '',
+      'firstname' : 'Keanu',
+      'lastname'  : 'Reeves',
+      'dob'       : '2/10/65'
+    },
+    {
+      'id'        : '2',
+      'moviesIds' : '2,3,4',
+      'movies'    : '',
+      'firstname' : 'James',
+      'lastname'  : 'Bob',
+      'dob'       : '6/05/67'
+    },
+    {
+      'id'        : '3',
+      'moviesIds' : '3,4,5,6',
+      'movies'    : '',
+      'firstname' : 'Dirk',
+      'lastname'  : 'Jackson',
+      'dob'       : '4/15/75'
+    }
+  ]);
+
+  $(function() { Backbone.history.start(); });
+</script>
+
+  <!-- <div id="debug"></div> -->
+</body>
+</html>

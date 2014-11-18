@@ -1,0 +1,235 @@
+/* Martin Krakowski
+ * metrodigi - Movie Quiz CSS
+ */
+
+
+/* Page defaults */
+body { background-color: #465e6a }
+.row { background-color: #ffffff }
+
+/* Masthead
+ *  -Branding, Navigation, Search 
+ */
+
+.row.masthead { 
+  margin-top: 20px; 
+  border-radius: 2px 2px 0 0;
+  background-color: #fff;
+}
+.row.masthead h1.branding { 
+  display: block;
+  float: left;
+  min-height: 85px;
+  line-height: 85px;
+  margin: 0 30px 0 18px;
+  padding: 0;
+  font-size: 24px;
+  text-shadow: 0 0 1px #999;
+}
+.row.masthead ul.navigation {
+  margin: 0;
+  padding: 0;
+  /*overflow: hidden;*/
+}
+.row.masthead ul.navigation li {
+  display: block;
+  float: left;
+  min-height: 85px;
+  line-height: 85px;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+.row.masthead ul.navigation li.nav-item {}
+.row.masthead ul.navigation li.search   {}
+.row.masthead ul.navigation li.search input {
+  max-width: 100%;
+  margin: 20px;
+  padding: 20px;
+}
+
+.row.masthead ul.navigation li.active,
+.row.masthead ul.navigation li:hover { 
+  color: #fff;
+  background-color: #008cba;
+  text-shadow: 1px 1px 0 #162e3a;
+}
+.row.masthead ul.navigation li.search:hover { background-color: transparent }
+.row.masthead ul.navigation li a {
+  display: block;
+  min-width: 150px;
+  padding: 0 20px;
+  text-align: center;
+  color: inherit;
+  border-right: 1px solid #eee;
+}
+.row.masthead ul.navigation li:first-child { border-left: 1px solid #eee }
+.row.masthead ul.navigation li.active a { border-color: #5db0c6; }
+.row.masthead ul.navigation li ul.submenu {
+  display: none;
+  width: 200px;
+  height: auto;
+  border: 4px solid #008cba;
+  box-shadow: 2px 2px 1px #25343c;
+  color: #333;
+  background-color: #fff;
+  text-shadow: none;
+  position: absolute;
+  top: 85px;
+  left: -20px;
+  z-index: 10;
+}
+.row.masthead ul.navigation li.add-new:hover ul.submenu { display: block }
+.row.masthead ul.navigation li ul.submenu li {
+  display: block;
+  width: 100%;
+  min-height: 45px;
+  line-height: 45px;
+  text-indent: 10px;
+  border: none;
+}
+.row.masthead ul.navigation li ul.submenu li a {
+  margin: 0;
+  padding: 0;
+  border: none;
+  text-align: left;
+}
+
+/* Page Headings
+ *  -Header title
+ *  -Breadcrumb
+ *  -Back buttons
+ */
+
+.row.page-heading {
+  padding: 10px 20px;
+  background-color: #25343c;
+}
+.row.page-heading h2 {
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 100;
+  letter-spacing: 1px;
+  line-height: 36px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+}
+
+
+/* Action buttons (CRUD)
+ *  -Add a movie
+ *  -Add an actor
+ */
+
+.row.action-buttons {
+  padding-bottom: 20px;
+  background-image: url(../images/bg__page-heading-shadow.png);
+  background-repeat: no-repeat;
+  background-position: left top;  
+}
+.row.action-buttons .columns { margin-right: 5px }
+.row.action-buttons a.button {
+  float: right;
+  width: 100%;
+  margin: 20px 0 0;
+}
+
+
+/* Main content
+ *  -Thumbanils (Movie Listing)
+ * 
+ */
+
+.row.content { 
+  padding-top: 40px;
+  border-bottom: 1px solid #25343c;
+  border-radius: 0 0 2px 2px;
+  background-image: url(../images/bg__page-heading-shadow.png);
+  background-repeat: no-repeat;
+  background-position: left top;      
+}
+.row.movie-listing { padding: 35px 20px 20px }
+.row.movie-listing .thumbnail { margin-bottom : 30px }
+.row.movie-listing .thumbnail:last-child { float: left }
+.row.movie-listing .thumbnail .thumb-inner {
+  min-height: 200px;
+  padding: 0;
+  position: relative;
+  cursor: pointer;
+}
+.row.movie-listing .thumbnail .thumb-inner:hover { box-shadow: 0 0 9px #999 }
+.row.movie-listing .thumbnail .thumb-inner img {
+  display: block;
+  width: 290px;
+  height: 430px;
+  position: relative;
+  z-index: 1;
+}
+.row.movie-listing .thumbnail .thumb-inner .movie-information {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  bottom: 10%;
+  left: -1px;
+  z-index: 2;
+}
+.row.movie-listing .thumbnail .thumb-inner .movie-information li {
+  display: block;
+  float: left;
+  clear: left;
+  margin: 1px;
+  padding: 5px 20px 5px 5px;
+  color: #000;
+  background-color: #fff;
+  font-size: 18px;
+  opacity: 0.70;
+}
+.row.movie-listing .thumbnail .thumb-inner .movie-information li.movie-title { 
+  padding: 0 10px 0 5px;
+  font-size: 24px;
+}
+
+/* Movie Detail page
+ *  -Add a movie
+ *  -Add an actor
+ */
+
+
+.row.movie-detail .columns .movie-image {
+  min-height: 400px;
+  margin-bottom: 40px;
+}
+
+.row.movie-detail .columns .movie-description ul li { list-style: none }
+.row.movie-detail .columns .movie-description ul li.title { font-size: 24px }
+.row.movie-detail .columns .movie-description ul li.actions {
+  display: block;
+  float: left;
+  margin: 20px 10px 0 0;
+}
+
+
+/* Add movie
+ *  -Add a movie
+ *  -Add an actor
+ */
+
+.row.add-movie { 
+  padding-bottom: 40px;
+}
+
+
+/* Additional styling
+ *  -Font emphasis
+ *  -Button colors
+ */
+
+.bold               { font-weight: bold }
+.button.green       { background-color: #007744 }
+.button.green:hover { background-color: #006633 }
+.button.red         { background-color: #990000 }
+.button.red:hover   { background-color: #660000 }
+.button span.icon       { opacity: 0.5 }
+.button:hover span.icon { opacity: 1.0 }
+.spacer                 { margin: 40px 10px 40px 0!important }
